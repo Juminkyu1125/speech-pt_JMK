@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SpeechPT , Analysis</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div class="analysis-page">
+    <header class="analysis-header">
+      <button class="back-button" id="backButton">← 노트 목록</button>
+    </header>
+    <main class="analysis-layout">
+      
+      <section class="left-panel">
+        <div class="slide-preview">
+          <div>
+            <p>발표 자료 미리보기</p>
+            <strong id="noteTitle">노트 제목을 불러오는 중입니다.</strong>
+          </div>
+        </div>
+
+        <div class="feedback-box transcript-box">
+          <p>발표 대본 / STT 영역</p>
+          <p id="noteDescription">노트 설명을 불러오는 중입니다.</p>
+          <ul id="sectionsList">
+            <li>음성 파일을 업로드하고 분석이 완료되면, 변환된 대본과 섹션 피드백이 여기에 표시됩니다.</li>
+            <li>나중에는 특정 대본 구간을 누르면 위 미리보기 영역에서 해당 발표 자료 섹션이 강조되도록 확장할 수 있습니다.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="center-panel">
+        <div class="chat-header">AI 분석 설명 도우미</div>
+        <div class="notice-bar">
+          <p>문서를 선택하고 엔터를 누르면 분석과 결과 출력이 순차적으로 진행됩니다.</p>
+        </div>
+
+        <div class="chat-body">
+          <div class="chat-message bot">분석이 완료되면 이곳에서 어떤 부분을 개선하면 좋을지 설명형 피드백을 보여줍니다.</div>
+          <div class="chat-message bot">MVP 단계에서는 분석 실행 버튼과 현재 상태 확인을 먼저 연결합니다.</div>
+        </div>
+
+        <div class="chat-input-box" id="chatDropzone">
+          <div class="input-card">
+            <div id="attachedFiles" class="attached-files"></div>
+            <div class="input-row">
+              <input type="text" placeholder="질문을 입력하세요" />
+              <input type="file" id="filePicker" accept=".pdf,.ppt,.pptx,.wav" multiple hidden />
+              <input type="file" id="documentFile" accept=".pdf,.ppt,.pptx" hidden />
+              <input type="file" id="audioFile" accept=".wav" hidden />
+              <button type="button" id="runAnalysisButton">➤</button>
+              <button type="button" id="attachFileButton">📎</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="right-panel">
+        <div class="score-card">
+          <p>3개 핵심 점수</p>
+          <p>내용 커버리지: <span id="contentCoverageScore">-</span></p>
+          <p>전달 안정성: <span id="deliveryStabilityScore">-</span></p>
+          <p>발표 속도: <span id="pacingScore">-</span></p>
+        </div>
+
+        <div class="score-card">
+          <p>가장 부족한 부분 하이라이트</p>
+          <ul id="improvementsList">
+            <li>개선점 데이터가 아직 없습니다.</li>
+          </ul>
+        </div>
+
+        <div class="score-card practice-card">
+          <p>전체 리포트 요약</p>
+          <p id="analysisSummary">분석 결과가 아직 없습니다.</p>
+          <p>강점</p>
+          <ul id="strengthsList">
+            <li>강점 데이터가 아직 없습니다.</li>
+          </ul>
+          <button type="button">연습모드</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js" integrity="sha512-zYwrFDXkKtzxE8v8v+WktPKMy8eprqUHYQsgWg01D6/o+xfeZfx5rq56eKcvI6VpXsepxmGAr2AWIob6x/Pc4g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="./js/analysis.js"></script>
+</body>
+</html>
