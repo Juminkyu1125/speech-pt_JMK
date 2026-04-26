@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://127.0.0.1:8000"; //API 붙이기
+import { API_BASE_URL, fetchJson, getAccessToken, setTokens, clearTokens, setTokensFromUrlParams } from "./auth.js";
 
 const noteGrid = document.getElementById("noteGrid");
 const createNoteCard = document.getElementById("createNoteCard");
@@ -23,32 +23,6 @@ function closeLoginModal() {
     loginModalBackdrop.classList.remove("active");
   }
 }
-
-function setupLoginModal() {
-  const loginModal = document.getElementById("loginModalBackdrop");
-  const closeButton = document.getElementById("closeLoginModalButton");
-  const loginLink = document.querySelector(".top-menu a");
-
-  if (loginLink) {
-    loginLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      openLoginModal();
-    });
-  }
-
-  if (closeButton) {
-    closeButton.addEventListener("click", closeLoginModal);
-  }
-
-  if (loginModal) {
-    loginModal.addEventListener("click", (e) => {
-      if (e.target === loginModal) {
-        closeLoginModal();
-      }
-    });
-  }
-}
-
 
 function moveToAnalysisPage(noteId) {
   window.location.href = `analysis.html?note_id=${noteId}`;
@@ -96,14 +70,14 @@ function renderNotes(notes) {
 }
 
 async function fetchNotes() {
-  setNotice("노트 목록을 불러오는 중입니다.");
-
-  const response = await fetch(`${API_BASE_URL}/notes`);
-  if (!response.ok) {
-    throw new Error("노트 목록을 불러오지 못했습니다.");
+  if (!getAccessToken()) {
+    setNotice("로그인이 필요합니다. 로그인 후 이용해주세요.");
+    return;
   }
 
-  const data = await response.json();
+  setNotice("노트 목록을 불러오는 중입니다.");
+
+  const data = await fetchJson(`${API_BASE_URL}/notes`);
   renderNotes(data.items ?? []);
 
   if ((data.total ?? 0) === 0) {
@@ -120,6 +94,11 @@ async function createNote() {
     return;
   }
 
+  if (!getAccessToken()) {
+    setNotice("로그인이 필요합니다. 노트를 생성하려면 로그인해주세요.");
+    return;
+  }
+
   const description = window.prompt("노트 설명을 입력하세요. 비워도 됩니다.") || null;
 
   setNotice("새 노트를 생성하는 중입니다.");
@@ -127,7 +106,7 @@ async function createNote() {
   createNoteCard.style.opacity = "0.6";
 
   try {
-    const response = await fetch(`${API_BASE_URL}/notes`, {
+    const createdNote = await fetchJson(`${API_BASE_URL}/notes`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -137,12 +116,6 @@ async function createNote() {
         description,
       }),
     });
-
-    if (!response.ok) {
-      throw new Error("노트 생성에 실패했습니다.");
-    }
-
-    const createdNote = await response.json();
     setNotice("새 노트를 생성했습니다. 분석 페이지로 이동합니다.");
     moveToAnalysisPage(createdNote.note_id);
   } catch (error) {
@@ -155,11 +128,114 @@ async function createNote() {
   }
 }
 
+function updateLoginLink() {
+  const loginLink = document.querySelector(".top-menu a");
+  if (!loginLink) {
+    return;
+  }
+
+  if (getAccessToken()) {
+    loginLink.textContent = "로그아웃";
+  } else {
+    loginLink.textContent = "로그인";
+  }
+}
+
+async function doLogin(payload) {
+  const tokens = await fetchJson(`${API_BASE_URL}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  setTokens(tokens);
+  updateLoginLink();
+  setNotice("로그인이 완료되었습니다.");
+  closeLoginModal();
+  await fetchNotes();
+}
+
+function setupLoginModal() {
+  const loginModal = document.getElementById("loginModalBackdrop");
+  const closeButton = document.getElementById("closeLoginModalButton");
+  const loginLink = document.querySelector(".top-menu a");
+  const loginForm = document.getElementById("loginForm");
+  const googleLoginButton = document.querySelector(".signup-links button:nth-child(1)");
+
+  if (loginLink) {
+    loginLink.addEventListener("click", async (e) => {
+      e.preventDefault();
+
+      if (getAccessToken()) {
+        clearTokens();
+        updateLoginLink();
+        setNotice("로그아웃 되었습니다.");
+        return;
+      }
+
+      openLoginModal();
+    });
+  }
+
+  if (closeButton) {
+    closeButton.addEventListener("click", closeLoginModal);
+  }
+
+  if (loginModal) {
+    loginModal.addEventListener("click", (e) => {
+      if (e.target === loginModal) {
+        closeLoginModal();
+      }
+    });
+  }
+
+  async function submitLoginForm() {
+    const email = loginForm.querySelector("input[type='email']").value;
+    const password = loginForm.querySelector("input[type='password']").value;
+
+    try {
+      await doLogin({ email, password, provider: "local" });
+    } catch (error) {
+      console.error(error);
+      window.alert("로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.");
+    }
+  }
+
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      await submitLoginForm();
+    });
+
+    const loginSubmitButton = loginForm.querySelector("button[type='submit']");
+    if (loginSubmitButton) {
+      loginSubmitButton.addEventListener("click", async (e) => {
+        e.preventDefault();
+        await submitLoginForm();
+      });
+    }
+  }
+
+  if (googleLoginButton) {
+    googleLoginButton.addEventListener("click", () => {
+      window.location.href = `${API_BASE_URL}/auth/oauth/login?provider=google`;
+    });
+  }
+}
+
 async function initNotePage() {
   if (!noteGrid || !createNoteCard) {
     return;
   }
 
+  const restored = setTokensFromUrlParams();
+  if (restored) {
+    setNotice("Google 로그인이 완료되었습니다.");
+  }
+
+  updateLoginLink();
   createNoteCard.addEventListener("click", createNote);
   setupLoginModal();
 

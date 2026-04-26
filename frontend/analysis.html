@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SpeechPT , Analysis</title>
-  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/common.css" />
+  <link rel="stylesheet" href="./css/analysis.css" />
 </head>
 <body>
   <div class="analysis-page">
@@ -15,14 +16,14 @@
       
       <section class="left-panel">
         <div class="slide-preview">
-          <div>
-            <p>발표 자료 미리보기</p>
-            <strong id="noteTitle">노트 제목을 불러오는 중입니다.</strong>
+          <div id="documentPreview" class="document-preview-empty">
+            <p class="document-preview-title">문서를 업로드하면 이곳에 미리보기가 표시됩니다.</p>
+            <p class="document-preview-subtext">PDF는 바로 볼 수 있고, PPT/PPTX는 파일 정보를 확인할 수 있습니다.</p>
           </div>
         </div>
 
         <div class="feedback-box transcript-box">
-          <p>발표 대본 / STT 영역</p>
+          <p>발표 재료 / STT 영역</p>
           <p id="noteDescription">노트 설명을 불러오는 중입니다.</p>
           <ul id="sectionsList">
             <li>음성 파일을 업로드하고 분석이 완료되면, 변환된 대본과 섹션 피드백이 여기에 표시됩니다.</li>
@@ -34,7 +35,7 @@
       <section class="center-panel">
         <div class="chat-header">AI 분석 설명 도우미</div>
         <div class="notice-bar">
-          <p>문서를 선택하고 엔터를 누르면 분석과 결과 출력이 순차적으로 진행됩니다.</p>
+          <p>노트 정보를 불러오는 중입니다.</p>
         </div>
 
         <div class="chat-body">
@@ -86,7 +87,6 @@
     </main>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js" integrity="sha512-zYwrFDXkKtzxE8v8v+WktPKMy8eprqUHYQsgWg01D6/o+xfeZfx5rq56eKcvI6VpXsepxmGAr2AWIob6x/Pc4g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="./js/analysis.js"></script>
+  <script type="module" src="./js/analysis.js"></script>
 </body>
 </html>

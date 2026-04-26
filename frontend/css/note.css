@@ -1,0 +1,107 @@
+/* note */
+.note-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.logo {
+  font-size: 32px;
+}
+
+.top-menu {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.top-menu a,
+.top-menu button {
+  text-decoration: none;
+  color: #111;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.notice-bar {
+  width: 100%;
+  background: #ddd;
+  padding: 14px 18px;
+  border-radius: 20px;
+  margin-bottom: 18px;
+}
+
+.view-toggle {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.view-toggle button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 12px;
+  background: #e7e7e7;
+  cursor: pointer;
+}
+
+.note-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 240px);
+  gap: 24px;
+}
+
+.note-card {
+  width: 240px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+}
+
+.note-thumbnail {
+  height: 160px;
+}
+
+.sample-bg {
+  background: linear-gradient(135deg, #755cff, #ff7ac3);
+}
+
+.empty-bg {
+  background: #d9d9d9;
+}
+
+.note-label {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  background: #d7b4ff;
+  font-size: 14px;
+}
+
+.note-card:nth-child(3) .note-label {
+  background: #93eb94;
+}
+
+.add-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.plus-icon {
+  height: 160px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 60px;
+}
